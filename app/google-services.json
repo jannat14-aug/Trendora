@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "435841005235",
+    "project_id": "trendora-1234",
+    "storage_bucket": "trendora-1234.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435841005235:android:71aa0ad4bda21eaae722c6",
+        "android_client_info": {
+          "package_name": "com.example.trendora"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3JbwpWVJYMuOGp5M7s6B2T-Ef1R7ce_o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

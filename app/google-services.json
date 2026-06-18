@@ -12,7 +12,20 @@
           "package_name": "com.example.trendora"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "435841005235-ju4pu8mud4je1p13k1od34o75f6ror3l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.trendora",
+            "certificate_hash": "dfb38863040eb4568c507423375e369a1142605d"
+          }
+        },
+        {
+          "client_id": "435841005235-gku9e1njgos5a41p503mai3eak61rjsl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB3JbwpWVJYMuOGp5M7s6B2T-Ef1R7ce_o"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435841005235-gku9e1njgos5a41p503mai3eak61rjsl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

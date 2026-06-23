@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!-- HOME BUTTON -->
+    <ImageView
+        android:id="@+id/homeBtn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ic_home"
+        app:tint="@android:color/white"/>
+
+    <!-- PROFILE BUTTON -->
+    <ImageView
+        android:id="@+id/profileBtn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ic_account"
+        app:tint="@android:color/white"/>
+
+    <!-- FLOATING UPLOAD BUTTON -->
+    <ImageView
+        android:id="@+id/uploadBtn"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/upload_circle"
+        android:padding="15dp"
+        android:src="@android:drawable/ic_input_add"
+        app:tint="@android:color/white"/>
+
+</RelativeLayout>

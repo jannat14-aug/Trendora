@@ -41,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
                             startActivity(
                                 Intent(
                                     this,
-                                    MainActivity::class.java
+                                    HomeActivity::class.java
                                 )
                             )
                             finish()
@@ -87,6 +87,16 @@ class LoginActivity : AppCompatActivity() {
             val client = GoogleSignIn.getClient(this, options)
 
             launcher.launch(client.signInIntent)
+        }
+    }
+    override fun onStart() {
+        super.onStart()
+
+        val user = FirebaseAuth.getInstance().currentUser
+
+        if (user != null) {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
         }
     }
 }

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "957920152062",
-    "project_id": "trendora-490c6",
-    "storage_bucket": "trendora-490c6.firebasestorage.app"
+    "project_number": "435841005235",
+    "project_id": "trendora-1234",
+    "storage_bucket": "trendora-1234.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:957920152062:android:d8e758d9e1dac3b32d98af",
+        "mobilesdk_app_id": "1:435841005235:android:71aa0ad4bda21eaae722c6",
         "android_client_info": {
           "package_name": "com.example.trendora"
         }
@@ -22,13 +22,29 @@
           }
         },
         {
+          "client_id": "435841005235-l4svkg90c9gvkpvgj2pgguf32gk2bc44.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.trendora",
+            "certificate_hash": "c47d0b125362425f7c0bc74fc35cee53d9538229"
+          }
+        },
+        {
+          "client_id": "435841005235-t1c5dtjnhk3vjpgh7173oi0dq9iblp08.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.trendora",
+            "certificate_hash": "f16b21dd653a0cf8dcd64c45194e7be1906e06dd"
+          }
+        },
+        {
           "client_id": "435841005235-gku9e1njgos5a41p503mai3eak61rjsl.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA8BtC14mafpmj9vMhE1bQ4YOClSo1QYAc"
+          "current_key": "AIzaSyB3JbwpWVJYMuOGp5M7s6B2T-Ef1R7ce_o"
         }
       ],
       "services": {

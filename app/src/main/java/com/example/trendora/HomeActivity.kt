@@ -6,6 +6,9 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.InputStreamReader
 
 class HomeActivity : AppCompatActivity() {
 
@@ -17,19 +20,18 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
 
         viewPager = findViewById(R.id.viewPager)
+        viewPager.orientation= ViewPager2.ORIENTATION_VERTICAL
 
-        val videoList = arrayListOf(
+        val json = assets.open("reels.json")
 
-            VideoModel(
-                R.raw.sample,
-                "@trendora",
-                "Welcome to Trendora 🚀"
-            )
+        val reader = InputStreamReader(json)
 
-        )
+        val type = object : TypeToken<ArrayList<VideoModel>>() {}.type
 
-        viewPager.orientation =
-            ViewPager2.ORIENTATION_VERTICAL
+        val videoList: ArrayList<VideoModel> =
+            Gson().fromJson(reader, type)
+
+
 
         viewPager.adapter =
             ReelAdapter(videoList)

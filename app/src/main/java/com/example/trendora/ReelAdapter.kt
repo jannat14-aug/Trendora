@@ -89,9 +89,7 @@ class ReelAdapter(
             }
         })
 
-        val mediaItem = MediaItem.fromUri(
-            "android.resource://${holder.itemView.context.packageName}/${video.videoResId}"
-        )
+        val mediaItem = MediaItem.fromUri(video.videoUrl)
 
         player.setMediaItem(mediaItem)
 
@@ -147,5 +145,20 @@ class ReelAdapter(
                 android.widget.Toast.LENGTH_SHORT
             ).show()
         }
+    }
+    override fun onViewDetachedFromWindow(
+        holder: ReelViewHolder
+    ) {
+        super.onViewDetachedFromWindow(holder)
+
+        holder.playerView.player?.pause()
+        holder.playerView.player?.seekTo(0)
+    }
+    override fun onViewAttachedToWindow(
+        holder: ReelViewHolder
+    ) {
+        super.onViewAttachedToWindow(holder)
+
+        holder.playerView.player?.play()
     }
 }

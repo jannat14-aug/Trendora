@@ -14,7 +14,8 @@
         android:textSize="40sp"
         android:textStyle="bold"
         android:textColor="#FF0000"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
     <androidx.media3.ui.PlayerView
         android:id="@+id/playerView"

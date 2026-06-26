@@ -71,79 +71,84 @@ class ReelAdapter(
         holder.username.text = video.username
         holder.caption.text = video.caption
 
-        val player = ExoPlayer.Builder(
-            holder.itemView.context
-        ).build()
-
+        val player = ExoPlayer.Builder(holder.itemView.context).build()
         holder.playerView.player = player
-
-        player.addListener(object : Player.Listener {
-
-            override fun onPlayerError(
-                error: PlaybackException
-            ) {
-                Log.e(
-                    "TRENDORA",
-                    "Video Error: ${error.message}"
-                )
-            }
-        })
 
         val mediaItem = MediaItem.fromUri(video.videoUrl)
 
         player.setMediaItem(mediaItem)
-
-        player.repeatMode =
-            ExoPlayer.REPEAT_MODE_ALL
-
+        player.repeatMode = Player.REPEAT_MODE_ONE
         player.prepare()
-
         player.playWhenReady = true
 
-        Log.d("TRENDORA", "Video loading")
+        // Pause / Play
 
         holder.playerView.setOnClickListener {
 
             if (player.isPlaying) {
 
                 player.pause()
-
-                holder.playPauseIcon.visibility =
-                    View.VISIBLE
+                holder.playPauseIcon.visibility = View.VISIBLE
 
             } else {
 
                 player.play()
-
-                holder.playPauseIcon.visibility =
-                    View.GONE
+                holder.playPauseIcon.visibility = View.GONE
             }
         }
+
+        // LIKE BUTTON
+
+        var liked = false
+
         holder.btnLike.setOnClickListener {
 
-            android.widget.Toast.makeText(
-                holder.itemView.context,
-                "Liked ❤️",
-                android.widget.Toast.LENGTH_SHORT
-            ).show()
+            liked = !liked
+
+            if (liked) {
+
+                holder.btnLike.setImageResource(R.drawable.ic_heart_filled)
+                holder.btnLike.setColorFilter(android.graphics.Color.RED)
+
+            } else {
+
+                holder.btnLike.setImageResource(R.drawable.ic_heart_outline)
+                holder.btnLike.setColorFilter(android.graphics.Color.WHITE)
+            }
         }
+
+        // COMMENT
 
         holder.btnComment.setOnClickListener {
 
             android.widget.Toast.makeText(
                 holder.itemView.context,
-                "Comments 💬",
+                "Comments coming soon 💬",
                 android.widget.Toast.LENGTH_SHORT
             ).show()
         }
 
+        // SHARE
+
         holder.btnShare.setOnClickListener {
 
-            android.widget.Toast.makeText(
-                holder.itemView.context,
-                "Share ↗",
-                android.widget.Toast.LENGTH_SHORT
-            ).show()
+            val intent = android.content.Intent(
+                android.content.Intent.ACTION_SEND
+            )
+
+            intent.type = "text/plain"
+
+            intent.putExtra(
+                android.content.Intent.EXTRA_TEXT,
+                video.videoUrl
+            )
+
+            holder.itemView.context.startActivity(
+                android.content.Intent.createChooser(
+                    intent,
+                    "Share Reel"
+                )
+            )
         }
     }
     override fun onViewDetachedFromWindow(

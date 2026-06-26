@@ -1,51 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <!-- Reels -->
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- HOME BUTTON -->
-    <ImageView
-        android:id="@+id/homeBtn"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/ic_home"
-        app:tint="@android:color/white"/>
+    <!-- Bottom Navigation -->
 
-    <!-- PROFILE BUTTON -->
-    <ImageView
-        android:id="@+id/profileBtn"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/ic_account"
-        app:tint="@android:color/white"/>
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:background="#000000"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="3"
+        android:layout_marginBottom="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- FLOATING UPLOAD BUTTON -->
-    <ImageView
-        android:id="@+id/uploadBtn"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="12dp"
-        android:background="@drawable/upload_circle"
-        android:padding="15dp"
-        android:src="@android:drawable/ic_input_add"
-        app:tint="@android:color/white"/>
+        <!-- HOME -->
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/homeBtn"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_home"
+            android:scaleType="centerInside"
+            app:tint="@android:color/white"/>
+
+        <!-- UPLOAD -->
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/uploadBtn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:contentDescription="Upload Reel"
+            android:src="@drawable/ic_add"
+            app:backgroundTint="#1976FF"
+            app:tint="@android:color/white"
+            app:maxImageSize="30dp"/>
+        <!-- PROFILE -->
+
+        <ImageView
+            android:id="@+id/profileBtn"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_account"
+            android:scaleType="centerInside"
+            app:tint="@android:color/white"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

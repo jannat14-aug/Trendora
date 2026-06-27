@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:surface_type="texture_view"
-        app:use_controller="false" />
+        app:use_controller="false"
+        app:resize_mode="zoom"/>
 
     <!-- PLAY / PAUSE ICON -->
 

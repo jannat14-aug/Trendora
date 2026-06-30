@@ -43,7 +43,8 @@ class HomeActivity : AppCompatActivity() {
         // Bottom Navigation
         val homeBtn = findViewById<ImageView>(R.id.homeBtn)
         val profileBtn = findViewById<ImageView>(R.id.profileBtn)
-        val uploadBtn = findViewById<FloatingActionButton>(R.id.uploadBtn)
+        val uploadBtn = findViewById<androidx.cardview.widget.CardView>(R.id.uploadBtn)
+
 
         homeBtn.setOnClickListener {
 

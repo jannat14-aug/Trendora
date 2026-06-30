@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+    <!-- Background -->
+    <color name="background">#0B0F17</color>
+    <color name="surface">#151B27</color>
+    <color name="card">#1D2433</color>
+
+    <!-- Brand -->
+    <color name="primary">#4F8CFF</color>
+    <color name="secondary">#7C5CFF</color>
+    <color name="accent">#00D4FF</color>
+
+    <!-- Text -->
+    <color name="white">#F8FAFC</color>
+    <color name="grey">#94A3B8</color>
+
+    <!-- Action -->
+    <color name="like">#FF4D6D</color>
+
 </resources>

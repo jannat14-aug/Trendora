@@ -8,6 +8,46 @@
     "videoUrl": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
     "username": "@steel",
     "caption": "Tears of Steel 🎬"
+  },
+  {
+    "videoUrl": "https://samplelib.com/mp4/sample-5s.mp4",
+    "username": "@MrBeast",
+    "caption": "here you go! 🎬"
+  },
+  {
+    "videoUrl": "https://res.cloudinary.com/daqcnjer9/video/upload/v1782917527/33060-395456583_ygizby.mp4  ",
+    "username": "@Zaika-e-India",
+    "caption": "Tasty Jalebi 🎬"
+  },
+  {
+    "videoUrl": "https://res.cloudinary.com/daqcnjer9/video/upload/v1782961058/WhatsApp_Video_2026-06-27_at_10.24.42_PM_1_au1gsc.mp4",
+    "username": "@DesiLife",
+    "caption": "Enjoy EveryDay"
+  },
+  {
+    "videoUrl": "https://res.cloudinary.com/daqcnjer9/video/upload/v1782832882/WhatsApp_Video_2026-06-29_at_10.49.33_PM_yendkp.mp4",
+    "username": "@FIFA CLUB",
+    "caption": "Ronaldo Fans"
+  },
+  {
+    "videoUrl": "https://res.cloudinary.com/daqcnjer9/video/upload/v1782832495/WhatsApp_Video_Recipe_q3zuj0.mp4",
+    "username": "@BeingSyreen",
+    "caption": "5 Minute Viral Dessert"
+  },
+  {
+    "videoUrl": "https://res.cloudinary.com/daqcnjer9/video/upload/v1782960146/ONE8_ViratKohli_jglttk.mp4",
+    "username": "@One8",
+    "caption": "Trending Kohli Brand"
+  },
+  {
+    "videoUrl": "https://res.cloudinary.com/daqcnjer9/video/upload/v1782833004/EID-MUBARAK_m7lcbo.mp4",
+    "username": "@Dailyneeds",
+    "caption": "Eid Mubarak"
+  },
+  {
+    "videoUrl": "https://res.cloudinary.com/daqcnjer9/video/upload/v1782960762/wedding_Vibes_jezga2.mp4",
+    "username": "@Shine Everyday",
+    "caption": "Weds"
   }
-
 ]
+

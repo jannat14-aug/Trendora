@@ -9,6 +9,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import android.view.LayoutInflater
+import android.widget.LinearLayout
+import android.widget.Toast
+import android.view.Gravity
+import android.widget.PopupWindow
+import android.graphics.drawable.ColorDrawable
+import android.graphics.Color
 
 class HomeActivity : AppCompatActivity() {
 
@@ -35,7 +43,8 @@ class HomeActivity : AppCompatActivity() {
         // Bottom Navigation
         val homeBtn = findViewById<ImageView>(R.id.homeBtn)
         val profileBtn = findViewById<ImageView>(R.id.profileBtn)
-        val uploadBtn = findViewById<FloatingActionButton>(R.id.uploadBtn)
+        val uploadBtn = findViewById<androidx.cardview.widget.CardView>(R.id.uploadBtn)
+
 
         homeBtn.setOnClickListener {
 
@@ -58,15 +67,55 @@ class HomeActivity : AppCompatActivity() {
 
         uploadBtn.setOnClickListener {
 
-            startActivity(
-                Intent(
-                    this,
-                    UploadActivity::class.java
-                )
+            val popupView = LayoutInflater.from(this)
+                .inflate(R.layout.popup_upload, null)
+
+            val popup = PopupWindow(
+                popupView,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                true
             )
 
-        }
+            popup.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            popup.isOutsideTouchable = true
+            popup.elevation = 20f
 
+            val cameraOption =
+                popupView.findViewById<LinearLayout>(R.id.cameraOption)
+
+            val galleryOption =
+                popupView.findViewById<LinearLayout>(R.id.galleryOption)
+
+            cameraOption.setOnClickListener {
+
+                popup.dismiss()
+
+                Toast.makeText(
+                    this,
+                    "Camera",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            galleryOption.setOnClickListener {
+
+                popup.dismiss()
+
+                Toast.makeText(
+                    this,
+                    "Gallery",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            popup.showAsDropDown(
+                uploadBtn,
+                -75,
+                -316,
+                Gravity.CENTER
+            )
+        }
     }
 
 }

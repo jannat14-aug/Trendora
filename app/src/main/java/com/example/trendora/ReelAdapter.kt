@@ -12,6 +12,11 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.RecyclerView
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.animation.LinearInterpolator
 
 class ReelAdapter(
     private val videoList: ArrayList<VideoModel>
@@ -40,6 +45,9 @@ class ReelAdapter(
 
         val btnShare: ImageView =
             itemView.findViewById(R.id.btnShare)
+
+        val bigHeart = itemView.findViewById<ImageView>(R.id.bigHeart)
+        val musicDisc = itemView.findViewById<ImageView>(R.id.musicDisc)
     }
 
     override fun onCreateViewHolder(
@@ -61,12 +69,47 @@ class ReelAdapter(
         return videoList.size
     }
 
+    private fun showBigHeart(holder: ReelViewHolder) {
+
+        holder.bigHeart.visibility = View.VISIBLE
+
+        holder.bigHeart.scaleX = 0f
+        holder.bigHeart.scaleY = 0f
+        holder.bigHeart.alpha = 0f
+
+        holder.bigHeart.animate()
+            .scaleX(1f)
+            .scaleY(1f)
+            .alpha(1f)
+            .setDuration(180)
+            .withEndAction {
+
+                holder.bigHeart.animate()
+                    .alpha(0f)
+                    .scaleX(1.5f)
+                    .scaleY(1.5f)
+                    .setDuration(250)
+                    .withEndAction {
+
+                        holder.bigHeart.visibility = View.GONE
+                        holder.bigHeart.alpha = 1f
+                        holder.bigHeart.scaleX = 1f
+                        holder.bigHeart.scaleY = 1f
+
+                    }
+
+            }
+
+    }
+
     override fun onBindViewHolder(
         holder: ReelViewHolder,
         position: Int
     ) {
 
         val video = videoList[position]
+
+        var liked = false
 
         holder.username.text = video.username
         holder.caption.text = video.caption
@@ -81,6 +124,42 @@ class ReelAdapter(
         player.prepare()
         player.playWhenReady = true
 
+        val rotate = ObjectAnimator.ofFloat(
+            holder.musicDisc,
+            "rotation",
+            0f,
+            360f
+        )
+
+        rotate.duration = 4500
+        rotate.repeatCount = ValueAnimator.INFINITE
+        rotate.interpolator = LinearInterpolator()
+        rotate.start()
+
+        val gestureDetector = GestureDetector(
+            holder.itemView.context,
+            object : GestureDetector.SimpleOnGestureListener() {
+
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+
+                    showBigHeart(holder)
+
+                    liked = true
+                    holder.btnLike.setImageResource(R.drawable.ic_heart_filled)
+                    holder.btnLike.setColorFilter(android.graphics.Color.RED)
+
+                    return true
+                }
+
+            }
+        )
+
+        holder.playerView.setOnTouchListener { _, event ->
+
+            gestureDetector.onTouchEvent(event)
+
+            false
+        }
         // Pause / Play
 
         holder.playerView.setOnClickListener {
@@ -99,9 +178,20 @@ class ReelAdapter(
 
         // LIKE BUTTON
 
-        var liked = false
 
         holder.btnLike.setOnClickListener {
+
+            holder.btnLike.animate()
+                .scaleX(1.3f)
+                .scaleY(1.3f)
+                .setDuration(120)
+                .withEndAction {
+
+                    holder.btnLike.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(120)
+                }
 
             liked = !liked
 
@@ -117,7 +207,7 @@ class ReelAdapter(
             }
         }
 
-        // COMMENT
+// COMMENT
 
         holder.btnComment.setOnClickListener {
 
@@ -128,7 +218,7 @@ class ReelAdapter(
             ).show()
         }
 
-        // SHARE
+// SHARE
 
         holder.btnShare.setOnClickListener {
 
@@ -151,19 +241,21 @@ class ReelAdapter(
             )
         }
     }
-    override fun onViewDetachedFromWindow(
-        holder: ReelViewHolder
-    ) {
-        super.onViewDetachedFromWindow(holder)
+        override fun onViewDetachedFromWindow(
+            holder: ReelViewHolder
+        ) {
+            super.onViewDetachedFromWindow(holder)
 
-        holder.playerView.player?.pause()
-        holder.playerView.player?.seekTo(0)
-    }
-    override fun onViewAttachedToWindow(
-        holder: ReelViewHolder
-    ) {
-        super.onViewAttachedToWindow(holder)
+            holder.playerView.player?.pause()
+            holder.playerView.player?.seekTo(0)
+        }
 
-        holder.playerView.player?.play()
+        override fun onViewAttachedToWindow(
+            holder: ReelViewHolder
+        ) {
+            super.onViewAttachedToWindow(holder)
+
+            holder.playerView.player?.play()
+        }
     }
-}
+

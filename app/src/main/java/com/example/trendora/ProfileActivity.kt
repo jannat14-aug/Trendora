@@ -2,19 +2,80 @@ package com.example.trendora
 
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.trendora.network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ProfileActivity : AppCompatActivity() {
 
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: ProfileGridAdapter
+    private lateinit var postsCount: TextView
+
+    private val reelList = ArrayList<ProfileReel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_profile)
 
-        val backBtn = findViewById<ImageView>(R.id.backBtn)
-
-        backBtn.setOnClickListener {
+        findViewById<ImageView>(R.id.backBtn).setOnClickListener {
             finish()
         }
+
+        postsCount = findViewById(R.id.postsCount)
+
+        recyclerView = findViewById(R.id.profileRecycler)
+        recyclerView.layoutManager = GridLayoutManager(this, 3)
+
+        adapter = ProfileGridAdapter(this, reelList)
+        recyclerView.adapter = adapter
+
+        loadReels()
+    }
+
+    private fun loadReels() {
+
+        RetrofitClient.apiService.getMyReels()
+            .enqueue(object : Callback<ArrayList<ProfileReel>> {
+
+                override fun onResponse(
+                    call: Call<ArrayList<ProfileReel>>,
+                    response: Response<ArrayList<ProfileReel>>
+                ) {
+
+                    if (response.isSuccessful && response.body() != null) {
+
+                        reelList.clear()
+                        reelList.addAll(response.body()!!)
+
+                        adapter.notifyDataSetChanged()
+
+                        postsCount.text = reelList.size.toString()
+
+                    }
+
+                }
+
+                override fun onFailure(
+                    call: Call<ArrayList<ProfileReel>>,
+                    t: Throwable
+                ) {
+
+                    Toast.makeText(
+                        this@ProfileActivity,
+                        "Failed to load reels",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                }
+
+            })
+
     }
 }

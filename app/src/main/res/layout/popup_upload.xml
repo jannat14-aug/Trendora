@@ -1,76 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="280dp"
-    android:layout_height="90dp"
-    android:orientation="horizontal"
-    android:padding="16dp"
-    android:gravity="center"
-    android:background="@drawable/popup_bg">
+    android:layout_width="260dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="18dp"
+    android:background="@drawable/upload_popup_bg">
 
-    <!-- Camera -->
+    <!-- CAMERA -->
 
     <LinearLayout
         android:id="@+id/cameraOption"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:clickable="true"
-        android:focusable="true">
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/upload_option_bg"
+        android:paddingHorizontal="14dp">
 
         <ImageView
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:src="@android:drawable/ic_menu_camera"
-            app:tint="#2196F3"/>
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="@drawable/icon_gradient_circle"
+            android:padding="8dp"
+            android:src="@drawable/ic_camera"
+            app:tint="@android:color/white"/>
 
-        <TextView
-            android:layout_width="53dp"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Camera"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:singleLine="true"
-            android:maxLines="1"/>
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Camera"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Record a reel"
+                android:textSize="12sp"
+                android:textColor="#A9B2C3"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_arrow_right"
+            app:tint="#7C5CFF"/>
 
     </LinearLayout>
 
-    <!-- Divider -->
+    <!-- SPACE -->
 
-    <View
-        android:layout_width="1dp"
-        android:layout_height="60dp"
-        android:background="#444444"/>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="12dp"/>
 
-    <!-- Gallery -->
+    <!-- GALLERY -->
 
     <LinearLayout
         android:id="@+id/galleryOption"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:clickable="true"
-        android:focusable="true">
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/upload_option_bg"
+        android:paddingHorizontal="14dp">
 
         <ImageView
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:src="@android:drawable/ic_menu_gallery"
-            app:tint="#2196F3"/>
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="@drawable/icon_gradient_circle"
+            android:padding="8dp"
+            android:src="@drawable/ic_gallery"
+            app:tint="@android:color/white"/>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Gallery"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:singleLine="true"
-            android:maxLines="1"/>
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gallery"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose a reel"
+                android:textSize="12sp"
+                android:textColor="#A9B2C3"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_arrow_right"
+            app:tint="#7C5CFF"/>
 
     </LinearLayout>
 

@@ -22,6 +22,7 @@ class ReelAdapter(
     private val videoList: ArrayList<VideoModel>
 ) : RecyclerView.Adapter<ReelAdapter.ReelViewHolder>() {
 
+    private val players = HashMap<Int, ExoPlayer>()
     inner class ReelViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
@@ -48,6 +49,7 @@ class ReelAdapter(
 
         val bigHeart = itemView.findViewById<ImageView>(R.id.bigHeart)
         val musicDisc = itemView.findViewById<ImageView>(R.id.musicDisc)
+
     }
 
     override fun onCreateViewHolder(
@@ -116,7 +118,7 @@ class ReelAdapter(
 
         val player = ExoPlayer.Builder(holder.itemView.context).build()
         holder.playerView.player = player
-
+        players[position] = player
         val mediaItem = MediaItem.fromUri(video.videoUrl)
 
         player.setMediaItem(mediaItem)
@@ -241,21 +243,20 @@ class ReelAdapter(
             )
         }
     }
-        override fun onViewDetachedFromWindow(
-            holder: ReelViewHolder
-        ) {
-            super.onViewDetachedFromWindow(holder)
+    override fun onViewDetachedFromWindow(holder: ReelViewHolder) {
+        super.onViewDetachedFromWindow(holder)
 
-            holder.playerView.player?.pause()
-            holder.playerView.player?.seekTo(0)
-        }
-
-        override fun onViewAttachedToWindow(
-            holder: ReelViewHolder
-        ) {
-            super.onViewAttachedToWindow(holder)
-
-            holder.playerView.player?.play()
-        }
+        holder.playerView.player?.pause()
     }
+    fun playVideoAt(position: Int) {
 
+        players.forEach { (index, player) ->
+
+            if (index == position) {
+                player.play()
+            } else {
+                player.pause()
+                player.seekTo(0)
+            }
+        }
+    }    }

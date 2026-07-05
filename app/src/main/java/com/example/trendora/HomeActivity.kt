@@ -61,8 +61,8 @@ class HomeActivity : AppCompatActivity() {
         val inputStream = contentResolver.openInputStream(uri)
 
         val file = File(
-            cacheDir,
-            "video_${System.currentTimeMillis()}.mp4"
+                cacheDir,
+        "video_${System.currentTimeMillis()}.mp4"
         )
 
         val outputStream = FileOutputStream(file)
@@ -155,13 +155,32 @@ class HomeActivity : AppCompatActivity() {
         // ViewPager
         viewPager = findViewById(R.id.viewPager)
         viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
-        viewPager.offscreenPageLimit= 1
+        viewPager.offscreenPageLimit=1
 
-//
 
         val videoList = ArrayList<VideoModel>()
 
-        viewPager.adapter = ReelAdapter(videoList)
+        val adapter = ReelAdapter(videoList)
+        viewPager.adapter = adapter
+
+        viewPager.offscreenPageLimit = 1
+
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                adapter.playVideoAt(position)
+            }
+        })
+        //viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        //
+        //            override fun onPageSelected(position: Int) {
+        //                super.onPageSelected(position)
+        //
+        //                (viewPager.adapter as ReelAdapter).playVideoAt(position)
+        //            }
+        //
+        //        })
 
         val database = FirebaseDatabase.getInstance(
             "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app/"

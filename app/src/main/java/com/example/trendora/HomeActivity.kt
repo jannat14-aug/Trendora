@@ -28,7 +28,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
-
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
@@ -58,8 +61,8 @@ class HomeActivity : AppCompatActivity() {
         val inputStream = contentResolver.openInputStream(uri)
 
         val file = File(
-                cacheDir,
-        "video_${System.currentTimeMillis()}.mp4"
+            cacheDir,
+            "video_${System.currentTimeMillis()}.mp4"
         )
 
         val outputStream = FileOutputStream(file)
@@ -152,16 +155,53 @@ class HomeActivity : AppCompatActivity() {
         // ViewPager
         viewPager = findViewById(R.id.viewPager)
         viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+        viewPager.offscreenPageLimit= 1
 
-        // Load reels.json
-        val reader = InputStreamReader(assets.open("reels.json"))
+//
 
-        val type = object : TypeToken<ArrayList<VideoModel>>() {}.type
-
-        val videoList: ArrayList<VideoModel> =
-            Gson().fromJson(reader, type)
+        val videoList = ArrayList<VideoModel>()
 
         viewPager.adapter = ReelAdapter(videoList)
+
+        val database = FirebaseDatabase.getInstance(
+            "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        ).reference
+
+        database.get().addOnSuccessListener { snapshot ->
+
+            videoList.clear()
+
+            for (child in snapshot.children) {
+
+                val reel = child.getValue(VideoModel::class.java)
+
+                if (reel != null) {
+                    videoList.add(reel)
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Failed to read: ${child.key}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            Toast.makeText(
+                this,
+                "Loaded ${videoList.size} reels",
+                Toast.LENGTH_LONG
+            ).show()
+
+            viewPager.adapter?.notifyDataSetChanged()
+
+        }.addOnFailureListener {
+
+            Toast.makeText(
+                this,
+                "Firebase Error: ${it.message}",
+                Toast.LENGTH_LONG
+            ).show()
+        }
 
         // Bottom Navigation
         val homeBtn = findViewById<ImageView>(R.id.homeBtn)

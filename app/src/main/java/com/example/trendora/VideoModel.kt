@@ -1,7 +1,7 @@
 package com.example.trendora
 
 data class VideoModel(
-    val videoUrl: String,
-    val username: String,
-    val caption: String
+    var videoUrl: String = "",
+    var username: String = "",
+    var caption: String = ""
 )

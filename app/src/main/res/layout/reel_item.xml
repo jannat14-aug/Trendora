@@ -105,7 +105,7 @@
             android:id="@+id/txtComments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="356"
+            android:text="0"
             android:textSize="13sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"

@@ -17,6 +17,11 @@ import android.animation.ValueAnimator
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.animation.LinearInterpolator
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
 class ReelAdapter(
     private val videoList: ArrayList<VideoModel>
@@ -43,6 +48,12 @@ class ReelAdapter(
 
         val btnComment: ImageView =
             itemView.findViewById(R.id.btnComment)
+
+        val btnSave: ImageView =
+            itemView.findViewById(R.id.btnSave)
+
+        val txtComments: TextView =
+            itemView.findViewById(R.id.txtComments)
 
         val btnShare: ImageView =
             itemView.findViewById(R.id.btnShare)
@@ -115,6 +126,23 @@ class ReelAdapter(
 
         holder.username.text = video.username
         holder.caption.text = video.caption
+
+        val database = FirebaseDatabase.getInstance(
+            "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app"
+        ).reference
+
+        database.child(position.toString())
+            .child("comments")
+            .addValueEventListener(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    holder.txtComments.text = snapshot.childrenCount.toString()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            })
 
         val player = ExoPlayer.Builder(holder.itemView.context).build()
         holder.playerView.player = player
@@ -213,13 +241,146 @@ class ReelAdapter(
 
         holder.btnComment.setOnClickListener {
 
-            android.widget.Toast.makeText(
-                holder.itemView.context,
-                "Comments coming soon 💬",
-                android.widget.Toast.LENGTH_SHORT
-            ).show()
-        }
+            val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(
+                holder.itemView.context
+            )
 
+            val view = LayoutInflater.from(holder.itemView.context)
+                .inflate(R.layout.comment_bottom_sheet, null)
+
+            dialog.setContentView(view)
+
+
+            val etComment = view.findViewById<android.widget.EditText>(R.id.etComment)
+            val btnSend = view.findViewById<android.widget.Button>(R.id.btnSend)
+
+            val commentRecycler =
+                view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.commentRecycler)
+
+            val commentList = ArrayList<CommentModel>()
+
+            val commentAdapter = CommentAdapter(commentList)
+
+            commentRecycler.layoutManager =
+                androidx.recyclerview.widget.LinearLayoutManager(holder.itemView.context)
+
+            commentRecycler.adapter = commentAdapter
+
+
+            val database = FirebaseDatabase.getInstance(
+                "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app"
+            ).reference
+
+            val currentPosition = holder.bindingAdapterPosition
+
+            database.child(currentPosition.toString())
+                .child("comments")
+                .addValueEventListener(object : ValueEventListener {
+
+                    override fun onDataChange(snapshot: DataSnapshot) {
+
+                        commentList.clear()
+
+                        for (commentSnapshot in snapshot.children) {
+
+                            val comment =
+                                commentSnapshot.getValue(CommentModel::class.java)
+
+                            if (comment != null) {
+                                commentList.add(comment)
+                            }
+                        }
+
+                        commentAdapter.notifyDataSetChanged()
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+
+                    }
+                })
+
+            btnSend.setOnClickListener {
+
+                android.widget.Toast.makeText(holder.itemView.context,"Send Button Clicked",
+                    android.widget.Toast.LENGTH_SHORT).show()
+
+                val comment = etComment.text.toString().trim()
+
+                if (comment.isNotEmpty()) {
+
+                    val currentPosition = holder.bindingAdapterPosition
+
+                    if (currentPosition == androidx.recyclerview.widget.RecyclerView.NO_POSITION) {
+                        return@setOnClickListener
+                    }
+
+                    val database = FirebaseDatabase.getInstance("https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app/").reference
+
+                    val commentData = CommentModel(
+                        username = "@trendora",
+                        comment = comment
+                    )
+
+                    database.child(currentPosition.toString())
+                        .child("comments")
+                        .push()
+                        .setValue(commentData)
+                        .addOnSuccessListener {
+
+                            commentList.add(commentData)
+                            commentAdapter.notifyItemInserted(commentList.size - 1)
+                            etComment.text.clear()
+
+                            android.widget.Toast.makeText(
+                                holder.itemView.context,
+                                "Comment added",
+                                android.widget.Toast.LENGTH_SHORT
+                            ).show()
+
+                        }
+                        .addOnFailureListener {
+
+                            android.widget.Toast.makeText(
+                                holder.itemView.context,
+                                "Failed to add comment",
+                                android.widget.Toast.LENGTH_SHORT
+                            ).show()
+
+                        }
+                } else {
+
+                    android.widget.Toast.makeText(
+                        holder.itemView.context,
+                        "Please write a comment",
+                        android.widget.Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            dialog.show()
+
+            val bottomSheet = dialog.findViewById<View>(
+                com.google.android.material.R.id.design_bottom_sheet
+            )
+
+            bottomSheet?.let {
+
+                val behavior =
+                    com.google.android.material.bottomsheet.BottomSheetBehavior.from(it)
+
+                behavior.state =
+                    com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+
+                behavior.peekHeight = 0
+
+                it.layoutParams.height =
+                    (holder.itemView.resources.displayMetrics.heightPixels * 0.85).toInt()
+
+                it.requestLayout()
+            }
+
+
+        }
 // SHARE
 
         holder.btnShare.setOnClickListener {
@@ -241,6 +402,33 @@ class ReelAdapter(
                     "Share Reel"
                 )
             )
+        }
+ //SAVE
+        var saved = false
+
+        holder.btnSave.setOnClickListener {
+
+            saved = !saved
+
+            if (saved) {
+                holder.btnSave.setImageResource(R.drawable.ic_bookmark_filled)
+
+                android.widget.Toast.makeText(
+                    holder.itemView.context,
+                    "Saved",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+
+            } else {
+
+                holder.btnSave.setImageResource(R.drawable.ic_bookmark)
+
+                android.widget.Toast.makeText(
+                    holder.itemView.context,
+                    "Removed from Saved",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
     override fun onViewDetachedFromWindow(holder: ReelViewHolder) {

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -152,6 +153,7 @@ class HomeActivity : AppCompatActivity() {
         // ViewPager
         viewPager = findViewById(R.id.viewPager)
         viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+
 
         // Load reels.json
         val reader = InputStreamReader(assets.open("reels.json"))

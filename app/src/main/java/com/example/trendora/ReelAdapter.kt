@@ -17,6 +17,8 @@ import android.animation.ValueAnimator
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.animation.LinearInterpolator
+import com.google.android.material.button.MaterialButton
+import android.widget.Toast
 
 class ReelAdapter(
     private val videoList: ArrayList<VideoModel>
@@ -45,6 +47,9 @@ class ReelAdapter(
 
         val btnShare: ImageView =
             itemView.findViewById(R.id.btnShare)
+
+        val btnFollow: MaterialButton =
+            itemView.findViewById(R.id.btnFollow)
 
         val bigHeart = itemView.findViewById<ImageView>(R.id.bigHeart)
         val musicDisc = itemView.findViewById<ImageView>(R.id.musicDisc)
@@ -110,6 +115,15 @@ class ReelAdapter(
         val video = videoList[position]
 
         var liked = false
+        val pref = holder.itemView.context.getSharedPreferences(
+            "Trendora",
+            android.content.Context.MODE_PRIVATE
+        )
+
+        var followed = pref.getBoolean(video.username, false)
+
+        holder.btnFollow.text =
+            if (followed) "Following" else "Follow"
 
         holder.username.text = video.username
         holder.caption.text = video.caption
@@ -240,22 +254,97 @@ class ReelAdapter(
                 )
             )
         }
-    }
-        override fun onViewDetachedFromWindow(
-            holder: ReelViewHolder
-        ) {
-            super.onViewDetachedFromWindow(holder)
+        holder.btnFollow.setOnClickListener {
 
-            holder.playerView.player?.pause()
-            holder.playerView.player?.seekTo(0)
+            // Button animation
+            holder.btnFollow.animate()
+                .scaleX(1.15f)
+                .scaleY(1.15f)
+                .setDuration(120)
+                .withEndAction {
+                    holder.btnFollow.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(120)
+                }
+
+            followed = !followed
+
+            if (followed) {
+
+                val pref = holder.itemView.context.getSharedPreferences(
+                    "Trendora",
+                    android.content.Context.MODE_PRIVATE
+                )
+
+                var followers = pref.getInt("followers", 0)
+                var following = pref.getInt("following", 0)
+                followers++
+                following++
+
+                pref.edit()
+                    .putBoolean(video.username, true)
+                    .putInt("followers", followers)
+                    .putInt("following", following)
+                    .apply()
+
+                holder.btnFollow.text = "Following"
+
+                Toast.makeText(
+                    holder.itemView.context,
+                    "Followed ${video.username}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+
+                val pref = holder.itemView.context.getSharedPreferences(
+                    "Trendora",
+                    android.content.Context.MODE_PRIVATE
+                )
+
+                var followers = pref.getInt("followers", 0)
+                var following = pref.getInt("following", 0)
+
+                if (followers > 0) {
+                    followers--
+                }
+                if (following > 0) {
+                    following--
+                }
+                pref.edit()
+                    .putBoolean(video.username, false)
+                    .putInt("followers", followers)
+                    .putInt("following", following)
+                    .apply()
+
+                holder.btnFollow.text = "Follow"
+
+                Toast.makeText(
+                    holder.itemView.context,
+                    "Unfollowed ${video.username}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
-
-        override fun onViewAttachedToWindow(
-            holder: ReelViewHolder
-        ) {
-            super.onViewAttachedToWindow(holder)
-
-            holder.playerView.player?.play()
-        }
     }
+
+    override fun onViewDetachedFromWindow(
+        holder: ReelViewHolder
+    ) {
+        super.onViewDetachedFromWindow(holder)
+
+        holder.playerView.player?.pause()
+        holder.playerView.player?.release()
+        holder.playerView.player = null
+    }
+
+    override fun onViewAttachedToWindow(
+        holder: ReelViewHolder
+    ) {
+        super.onViewAttachedToWindow(holder)
+
+        holder.playerView.player?.play()
+    }
+}
+
 

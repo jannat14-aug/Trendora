@@ -17,6 +17,8 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ProfileGridAdapter
     private lateinit var postsCount: TextView
+    private lateinit var followersCount: TextView
+    private lateinit var followingCount: TextView
 
     private val reelList = ArrayList<ProfileReel>()
 
@@ -29,6 +31,8 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         postsCount = findViewById(R.id.postsCount)
+        followersCount = findViewById(R.id.followersCount)
+        followingCount = findViewById(R.id.followingCount)
 
         recyclerView = findViewById(R.id.profileRecycler)
         recyclerView.layoutManager = GridLayoutManager(this, 3)
@@ -37,6 +41,13 @@ class ProfileActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         loadReels()
+        val pref = getSharedPreferences("Trendora", MODE_PRIVATE)
+
+        followersCount.text =
+            pref.getInt("followers", 0).toString()
+
+        followingCount.text =
+            pref.getInt("following", 0).toString()
     }
 
     private fun loadReels() {
@@ -77,5 +88,13 @@ class ProfileActivity : AppCompatActivity() {
 
             })
 
+    }
+    override fun onResume() {
+        super.onResume()
+
+        val pref = getSharedPreferences("Trendora", MODE_PRIVATE)
+
+        followersCount.text = pref.getInt("followers", 0).toString()
+        followingCount.text = pref.getInt("following", 0).toString()
     }
 }

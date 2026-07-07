@@ -16,7 +16,7 @@ class ProfileReelAdapter(
         RecyclerView.ViewHolder(itemView) {
 
         val reelImage: ImageView =
-            itemView.findViewById(R.id.reelImage)
+            itemView.findViewById(R.id.thumbnail)
     }
 
     override fun onCreateViewHolder(

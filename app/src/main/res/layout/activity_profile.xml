@@ -17,13 +17,18 @@
         app:tint="#FFFFFF"/>
 
     <ImageView
+        android:id="@+id/profileImage"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:src="@drawable/profile_demo"/>
+        android:src="@drawable/profile_demo"
+        android:scaleType="centerCrop"
+        android:clickable="true"
+        android:focusable="true"/>
 
     <TextView
+        android:id="@+id/txtUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="/@trendora"
@@ -34,6 +39,7 @@
         android:layout_marginTop="15dp"/>
 
     <TextView
+        android:id="@+id/txtBio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Building the future of fashion ✨"

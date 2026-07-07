@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.bumptech.glide.Glide
 
 class ReelAdapter(
     private val videoList: ArrayList<VideoModel>
@@ -60,6 +61,9 @@ class ReelAdapter(
 
         val bigHeart = itemView.findViewById<ImageView>(R.id.bigHeart)
         val musicDisc = itemView.findViewById<ImageView>(R.id.musicDisc)
+
+        val profileImage =
+            itemView.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profileImage)
 
     }
 
@@ -126,6 +130,30 @@ class ReelAdapter(
 
         holder.username.text = video.username
         holder.caption.text = video.caption
+
+        val prefs = holder.itemView.context.getSharedPreferences(
+            "Trendora",
+            android.content.Context.MODE_PRIVATE
+        )
+
+        val imageUrl = prefs.getString("profile_image", null)
+
+        if (!imageUrl.isNullOrEmpty()) {
+
+            Glide.with(holder.itemView.context)
+                .load(imageUrl)
+                .placeholder(R.drawable.profile_demo)
+                .error(R.drawable.profile_demo)
+                .into(holder.profileImage)
+
+            Glide.with(holder.itemView.context)
+                .load(imageUrl)
+                .placeholder(R.drawable.music)
+                .error(R.drawable.music)
+                .circleCrop()
+                .into(holder.musicDisc)
+
+        }
 
         val database = FirebaseDatabase.getInstance(
             "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app"

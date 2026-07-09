@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide
 import android.util.Log
 import android.content.Intent
 import android.widget.Button
+import com.google.firebase.database.FirebaseDatabase
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -76,8 +77,10 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        loadProfile()
+       // loadProfile()
 
+        usernameText.text = "@trendora"
+        bioText.text = "Trendora Creator 🚀"
 
         loadReels()
     }
@@ -231,41 +234,64 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun loadReels() {
 
-        RetrofitClient.apiService.getMyReels()
-            .enqueue(object : Callback<ArrayList<ProfileReel>> {
+        val database = FirebaseDatabase.getInstance(
+            "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        ).getReference("reels").child("reels")
 
-                override fun onResponse(
-                    call: Call<ArrayList<ProfileReel>>,
-                    response: Response<ArrayList<ProfileReel>>
-                ) {
+        database.get().addOnSuccessListener { snapshot ->
 
-                    if (response.isSuccessful && response.body() != null) {
+            reelList.clear()
 
-                        reelList.clear()
-                        reelList.addAll(response.body()!!)
+            for (child in snapshot.children) {
 
-                        adapter.notifyDataSetChanged()
+                Log.d("PROFILE", "KEY = ${child.key}")
+                Log.d("PROFILE", "VALUE = ${child.value}")
 
-                        postsCount.text = reelList.size.toString()
+                val reel = child.getValue(ProfileReel::class.java)
 
+                if (reel?.videoUrl?.isNotEmpty() == true) {
+                    reelList.add(reel)
+                }
+                Log.d("FIREBASE", "KEY = ${child.key}")
+                Log.d("FIREBASE", "VALUE = ${child.value}")
+                Log.d("FIREBASE", "OBJECT = $reel")
+
+                Log.d(
+                    "PROFILE",
+                    "REEL = $reel"
+                )
+
+                if (reel != null) {
+
+                    Log.d(
+                        "PROFILE",
+                        "REEL ADDED"
+                    )
+
+                    if (reel.ownerId == "user1") {
+                        reelList.add(reel)
                     }
+                } else {
 
+                    Log.d(
+                        "PROFILE",
+                        "NULL OBJECT"
+                    )
                 }
+            }
 
-                override fun onFailure(
-                    call: Call<ArrayList<ProfileReel>>,
-                    t: Throwable
-                ) {
+            adapter.notifyDataSetChanged()
 
-                    Toast.makeText(
-                        this@ProfileActivity,
-                        "Failed to load reels",
-                        Toast.LENGTH_SHORT
-                    ).show()
+            postsCount.text = reelList.size.toString()
 
-                }
+        }.addOnFailureListener {
 
-            })
+            Toast.makeText(
+                this,
+                "Failed to load reels",
+                Toast.LENGTH_SHORT
+            ).show()
 
+        }
     }
 }

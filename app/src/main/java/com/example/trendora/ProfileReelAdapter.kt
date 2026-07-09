@@ -1,11 +1,12 @@
 package com.example.trendora
 
-import android.graphics.Bitmap
-import android.media.MediaMetadataRetriever
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.RecyclerView
 
 class ProfileReelAdapter(
@@ -15,8 +16,8 @@ class ProfileReelAdapter(
     inner class ReelViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
-        val reelImage: ImageView =
-            itemView.findViewById(R.id.thumbnail)
+        val playerView: PlayerView =
+            itemView.findViewById(R.id.playerView)
     }
 
     override fun onCreateViewHolder(
@@ -25,7 +26,11 @@ class ProfileReelAdapter(
     ): ReelViewHolder {
 
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_profile_reel, parent, false)
+            .inflate(
+                R.layout.item_profile_reel,
+                parent,
+                false
+            )
 
         return ReelViewHolder(view)
     }
@@ -39,23 +44,28 @@ class ProfileReelAdapter(
 
         val reel = reelList[position]
 
-        try {
+        val player = ExoPlayer.Builder(
+            holder.itemView.context
+        ).build()
 
-            val retriever = MediaMetadataRetriever()
+        holder.playerView.player = player
 
-            retriever.setDataSource(reel.videoUrl)
-            val bitmap: Bitmap? =
-                retriever.frameAtTime
+        val mediaItem = MediaItem.fromUri(
+            reel.videoUrl
+        )
 
-            holder.reelImage.setImageBitmap(bitmap)
+        player.setMediaItem(mediaItem)
 
-            retriever.release()
+        player.repeatMode = Player.REPEAT_MODE_ONE
+        player.volume = 0f
+        player.prepare()
+        player.play()
 
-        } catch (e: Exception) {
+    }
 
-            holder.reelImage.setImageResource(R.drawable.profile_demo)
+    override fun onViewRecycled(holder: ReelViewHolder) {
+        super.onViewRecycled(holder)
 
-        }
-
+        holder.playerView.player?.release()
     }
 }

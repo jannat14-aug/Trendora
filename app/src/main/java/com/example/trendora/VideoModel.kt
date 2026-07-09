@@ -1,8 +1,16 @@
 package com.example.trendora
 
 data class VideoModel(
-    val videoUrl: String = "",
-    val username: String = "",
-    val caption: String = "",
-    val profileImageUrl :String=""
+
+    var reelId: String = "",
+    var ownerId: String = "",
+    var username: String = "",
+    var caption: String = "",
+    var videoUrl: String = "",
+    var thumbnail: String = "",
+    var profileImageUrl: String = "",
+    var likes: Long = 0,
+    var comments: Long = 0,
+    var timestamp: Long = 0
+
 )

@@ -29,7 +29,7 @@ interface ApiService {
     ): Call<UploadResponse>
 
     @Multipart
-    @POST("uploadProfile")
+    @POST("upload-profile")
     fun uploadProfile(
         @Part file: MultipartBody.Part
     ): Call<UploadResponse>

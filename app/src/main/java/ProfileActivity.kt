@@ -252,8 +252,8 @@ class ProfileActivity : AppCompatActivity() {
 
                     Toast.makeText(
                         this@ProfileActivity,
-                        "Failed to load profile",
-                        Toast.LENGTH_SHORT
+                        t.message,
+                        Toast.LENGTH_LONG
                     ).show()
 
                 }

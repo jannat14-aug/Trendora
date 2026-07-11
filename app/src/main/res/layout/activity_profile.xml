@@ -31,7 +31,7 @@
         android:id="@+id/txtUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="\@trendora"
+        android:text="/@trendora"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -87,6 +87,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/followersCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"
@@ -103,13 +104,17 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/followingLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true">
 
             <TextView
+                android:id="@+id/followingCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0"

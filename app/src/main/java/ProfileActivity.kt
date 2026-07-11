@@ -24,6 +24,8 @@ import com.bumptech.glide.Glide
 import android.util.Log
 import android.content.Intent
 import android.widget.Button
+import android.widget.LinearLayout
+
 import com.google.firebase.database.FirebaseDatabase
 
 class ProfileActivity : AppCompatActivity() {
@@ -31,6 +33,8 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ProfileGridAdapter
     private lateinit var postsCount: TextView
+    private lateinit var followersCount: TextView
+    private lateinit var followingCount: TextView
 
     private lateinit var usernameText: TextView
     private lateinit var bioText: TextView
@@ -57,7 +61,13 @@ class ProfileActivity : AppCompatActivity() {
 
 
         postsCount = findViewById(R.id.postsCount)
+        followersCount = findViewById(R.id.followersCount)
+        followingCount = findViewById(R.id.followingCount)
+        val followingLayout = findViewById<LinearLayout>(R.id.followingLayout)
 
+        followingLayout.setOnClickListener {
+            startActivity(Intent(this, FollowingActivity::class.java))
+        }
         usernameText = findViewById(R.id.txtUsername)
         bioText = findViewById(R.id.txtBio)
 
@@ -77,10 +87,17 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-         loadProfile()
+        loadProfile()
 
 
         loadReels()
+        val pref = getSharedPreferences("Trendora", MODE_PRIVATE)
+
+        followersCount.text =
+            pref.getInt("followers", 0).toString()
+
+        followingCount.text =
+            pref.getInt("following", 0).toString()
     }
 
 
@@ -100,6 +117,7 @@ class ProfileActivity : AppCompatActivity() {
             }
 
         }
+
     private fun uploadProfileImage(uri: Uri) {
 
         val inputStream = contentResolver.openInputStream(uri)

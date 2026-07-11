@@ -17,12 +17,15 @@ import android.animation.ValueAnimator
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.animation.LinearInterpolator
+import com.google.android.material.button.MaterialButton
+import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 
 class ReelAdapter(
     private val videoList: ArrayList<VideoModel>
@@ -60,6 +63,9 @@ class ReelAdapter(
         val btnShare: ImageView =
             itemView.findViewById(R.id.btnShare)
 
+        val btnFollow: MaterialButton =
+            itemView.findViewById(R.id.btnFollow)
+
         val bigHeart = itemView.findViewById<ImageView>(R.id.bigHeart)
         val musicDisc = itemView.findViewById<ImageView>(R.id.musicDisc)
 
@@ -83,43 +89,6 @@ class ReelAdapter(
         return ReelViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return videoList.size
-    }
-
-    private fun showBigHeart(holder: ReelViewHolder) {
-
-        holder.bigHeart.visibility = View.VISIBLE
-
-        holder.bigHeart.scaleX = 0f
-        holder.bigHeart.scaleY = 0f
-        holder.bigHeart.alpha = 0f
-
-        holder.bigHeart.animate()
-            .scaleX(1f)
-            .scaleY(1f)
-            .alpha(1f)
-            .setDuration(180)
-            .withEndAction {
-
-                holder.bigHeart.animate()
-                    .alpha(0f)
-                    .scaleX(1.5f)
-                    .scaleY(1.5f)
-                    .setDuration(250)
-                    .withEndAction {
-
-                        holder.bigHeart.visibility = View.GONE
-                        holder.bigHeart.alpha = 1f
-                        holder.bigHeart.scaleX = 1f
-                        holder.bigHeart.scaleY = 1f
-
-                    }
-
-            }
-
-    }
-
     override fun onBindViewHolder(
         holder: ReelViewHolder,
         position: Int
@@ -128,6 +97,15 @@ class ReelAdapter(
         val video = videoList[position]
 
         var liked = false
+        val pref = holder.itemView.context.getSharedPreferences(
+            "Trendora",
+            android.content.Context.MODE_PRIVATE
+        )
+
+        var followed = pref.getBoolean(video.username, false)
+
+        holder.btnFollow.text =
+            if (followed) "Following" else "Follow"
 
         holder.username.text = video.username
         holder.caption.text = video.caption
@@ -433,6 +411,115 @@ class ReelAdapter(
                 )
             )
         }
+
+        holder.btnFollow.setOnClickListener {
+            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
+            // Button animation
+            holder.btnFollow.animate()
+                .scaleX(1.15f)
+                .scaleY(1.15f)
+                .setDuration(120)
+                .withEndAction {
+                    holder.btnFollow.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(120)
+                }
+
+            followed = !followed
+
+            if (followed) {
+
+                val pref = holder.itemView.context.getSharedPreferences(
+                    "Trendora",
+                    android.content.Context.MODE_PRIVATE
+                )
+
+                var followers = pref.getInt("followers", 0)
+                var following = pref.getInt("following", 0)
+                followers++
+                following++
+
+                pref.edit()
+                    .putBoolean(video.username, true)
+                    .putInt("followers", followers)
+                    .putInt("following", following)
+                    .apply()
+                FirebaseDatabase.getInstance(
+                    "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app"
+                )
+                    .reference
+                    .child("following")
+                    .child(currentUserId)
+                    .child(video.username)
+                    .setValue(true)
+                    .addOnSuccessListener {
+
+                        Toast.makeText(
+                            holder.itemView.context,
+                            "Saved to Firebase",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                    }
+                    .addOnFailureListener { e ->
+
+                        Toast.makeText(
+                            holder.itemView.context,
+                            e.message,
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                    }
+
+                holder.btnFollow.text = "Following"
+
+                Toast.makeText(
+                    holder.itemView.context,
+                    "Followed ${video.username}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+
+                val pref = holder.itemView.context.getSharedPreferences(
+                    "Trendora",
+                    android.content.Context.MODE_PRIVATE
+                )
+
+                var followers = pref.getInt("followers", 0)
+                var following = pref.getInt("following", 0)
+
+                if (followers > 0) {
+                    followers--
+                }
+                if (following > 0) {
+                    following--
+                }
+                pref.edit()
+                    .putBoolean(video.username, false)
+                    .putInt("followers", followers)
+                    .putInt("following", following)
+                    .apply()
+                FirebaseDatabase.getInstance(
+                    "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app"
+                )
+                    .reference
+                    .child("following")
+                    .child(currentUserId)
+                    .child(video.username)
+                    .removeValue()
+                holder.btnFollow.text = "Follow"
+
+                Toast.makeText(
+                    holder.itemView.context,
+                    "Unfollowed ${video.username}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        // ---------------- SAVE ----------------
+
         //SAVE
         var saved = false
 
@@ -441,22 +528,23 @@ class ReelAdapter(
             saved = !saved
 
             if (saved) {
+
                 holder.btnSave.setImageResource(R.drawable.ic_bookmark_filled)
 
-                android.widget.Toast.makeText(
+                Toast.makeText(
                     holder.itemView.context,
                     "Saved",
-                    android.widget.Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT
                 ).show()
 
             } else {
 
                 holder.btnSave.setImageResource(R.drawable.ic_bookmark)
 
-                android.widget.Toast.makeText(
+                Toast.makeText(
                     holder.itemView.context,
                     "Removed from Saved",
-                    android.widget.Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -468,7 +556,51 @@ class ReelAdapter(
         holder.playerView.player?.pause()
     }
 
-    fun playVideoAt(position: Int) {
+    override fun getItemCount(): Int {
+        return videoList.size
+    }
+
+
+    private fun showBigHeart(holder: ReelViewHolder) {
+
+        holder.bigHeart.visibility = View.VISIBLE
+
+        holder.bigHeart.scaleX = 0f
+        holder.bigHeart.scaleY = 0f
+        holder.bigHeart.alpha = 0f
+
+        holder.bigHeart.animate()
+            .scaleX(1f)
+            .scaleY(1f)
+            .alpha(1f)
+            .setDuration(180)
+            .withEndAction {
+
+                holder.bigHeart.animate()
+                    .alpha(0f)
+                    .scaleX(1.5f)
+                    .scaleY(1.5f)
+                    .setDuration(250)
+                    .withEndAction {
+
+                        holder.bigHeart.visibility = View.GONE
+                        holder.bigHeart.alpha = 1f
+                        holder.bigHeart.scaleX = 1f
+                        holder.bigHeart.scaleY = 1f
+
+                    }
+
+            }
+
+    }
+
+    override fun onViewAttachedToWindow(holder: ReelViewHolder) {
+        super.onViewAttachedToWindow(holder)
+
+        holder.playerView.player?.play()
+    }
+
+ fun playVideoAt(position: Int) {
 
         players.forEach { (index, player) ->
 
@@ -481,3 +613,5 @@ class ReelAdapter(
         }
     }
 }
+
+

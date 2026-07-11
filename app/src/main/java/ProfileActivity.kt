@@ -77,12 +77,18 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-       // loadProfile()
+         loadProfile()
 
-        usernameText.text = "@trendora"
-        bioText.text = "Trendora Creator 🚀"
 
         loadReels()
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        loadProfile()
+        loadProfileImage()
     }
 
     private val imagePicker =
@@ -128,19 +134,32 @@ class ProfileActivity : AppCompatActivity() {
 
                         val imageUrl = response.body()!!.imageUrl
 
+
+                        Toast.makeText(
+                            this@ProfileActivity,
+                            "FROM API: $imageUrl",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+
+
                         Toast.makeText(
                             this@ProfileActivity,
                             imageUrl ?: "Image URL is null",
                             Toast.LENGTH_LONG
                         ).show()
 
-                       if (imageUrl != null) {
+                        if (imageUrl != null) {
 
                             val prefs = getSharedPreferences("Trendora", MODE_PRIVATE)
 
-                           prefs.edit()
-                               .putString("profile_image", imageUrl)
-                               .commit()
+                            prefs.edit()
+                                .putString("profile_image", imageUrl)
+                                .apply()
+
+                            Glide.with(this@ProfileActivity)
+                                .load(imageUrl)
+                                .into(profileImage)
 
                         }
 
@@ -167,7 +186,7 @@ class ProfileActivity : AppCompatActivity() {
                 }
 
             })
-      // Stop here. We'll continue in the next step.
+        // Stop here. We'll continue in the next step.
     }
 
     private fun loadProfileImage() {
@@ -191,6 +210,11 @@ class ProfileActivity : AppCompatActivity() {
                 .placeholder(R.drawable.profile_demo)
                 .error(R.drawable.profile_demo)
                 .into(profileImage)
+
+        } else {
+
+            profileImage.setImageResource(R.drawable.profile_demo)
+
         }
 
     }
@@ -211,6 +235,11 @@ class ProfileActivity : AppCompatActivity() {
 
                         usernameText.text = profile.username
                         bioText.text = profile.bio
+                        Toast.makeText(
+                            this@ProfileActivity,
+                            "Profile image: ${profile.imageUrl}",
+                            Toast.LENGTH_LONG
+                        ).show()
 
                     }
 

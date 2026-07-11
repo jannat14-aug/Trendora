@@ -122,7 +122,7 @@ class UploadActivity : AppCompatActivity() {
                         val filename = response.body()!!.filename
 
                         val videoUrl =
-                            "http://10.190.29.74:8000/uploads/$filename"
+                            "http://192.168.0.105:8000/uploads/$filename"
 
                         val database =
                             FirebaseDatabase.getInstance(

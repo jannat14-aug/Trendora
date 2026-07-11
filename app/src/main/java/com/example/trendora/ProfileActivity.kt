@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide
 import android.util.Log
 import android.content.Intent
 import android.widget.Button
+import android.widget.LinearLayout
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -60,7 +61,11 @@ class ProfileActivity : AppCompatActivity() {
         postsCount = findViewById(R.id.postsCount)
         followersCount = findViewById(R.id.followersCount)
         followingCount = findViewById(R.id.followingCount)
+        val followingLayout = findViewById<LinearLayout>(R.id.followingLayout)
 
+        followingLayout.setOnClickListener {
+            startActivity(Intent(this, FollowingActivity::class.java))
+        }
         usernameText = findViewById(R.id.txtUsername)
         bioText = findViewById(R.id.txtBio)
 

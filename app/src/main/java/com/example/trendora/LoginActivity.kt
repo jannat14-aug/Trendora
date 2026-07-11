@@ -11,6 +11,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.FirebaseDatabase
+import java.util.HashMap
 
 class LoginActivity : AppCompatActivity() {
 
@@ -37,7 +39,25 @@ class LoginActivity : AppCompatActivity() {
                                 "Login Successful",
                                 Toast.LENGTH_SHORT
                             ).show()
+                            val currentUser = FirebaseAuth.getInstance().currentUser
 
+                            if (currentUser != null) {
+
+                                val database = FirebaseDatabase.getInstance(
+                                    "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app"
+                                ).reference
+
+                                val userMap = HashMap<String, Any>()
+
+                                userMap["uid"] = currentUser.uid
+                                userMap["username"] = currentUser.displayName ?: ""
+                                userMap["email"] = currentUser.email ?: ""
+                                userMap["profileImage"] = currentUser.photoUrl?.toString() ?: ""
+
+                                database.child("Users")
+                                    .child(currentUser.uid)
+                                    .setValue(userMap)
+                            }
                             startActivity(
                                 Intent(
                                     this,

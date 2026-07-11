@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 
 class ReelAdapter(
     private val videoList: ArrayList<VideoModel>
@@ -410,7 +411,7 @@ class ReelAdapter(
         }
 
         holder.btnFollow.setOnClickListener {
-
+            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
             // Button animation
             holder.btnFollow.animate()
                 .scaleX(1.15f)
@@ -442,6 +443,32 @@ class ReelAdapter(
                     .putInt("followers", followers)
                     .putInt("following", following)
                     .apply()
+                FirebaseDatabase.getInstance(
+                    "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app"
+                )
+                    .reference
+                    .child("following")
+                    .child(currentUserId)
+                    .child(video.username)
+                    .setValue(true)
+                    .addOnSuccessListener {
+
+                        Toast.makeText(
+                            holder.itemView.context,
+                            "Saved to Firebase",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                    }
+                    .addOnFailureListener { e ->
+
+                        Toast.makeText(
+                            holder.itemView.context,
+                            e.message,
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                    }
 
                 holder.btnFollow.text = "Following"
 
@@ -471,7 +498,14 @@ class ReelAdapter(
                     .putInt("followers", followers)
                     .putInt("following", following)
                     .apply()
-
+                FirebaseDatabase.getInstance(
+                    "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app"
+                )
+                    .reference
+                    .child("following")
+                    .child(currentUserId)
+                    .child(video.username)
+                    .removeValue()
                 holder.btnFollow.text = "Follow"
 
                 Toast.makeText(

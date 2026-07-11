@@ -26,6 +26,8 @@ import android.content.Intent
 import android.widget.Button
 import android.widget.LinearLayout
 
+import com.google.firebase.database.FirebaseDatabase
+
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
@@ -98,6 +100,14 @@ class ProfileActivity : AppCompatActivity() {
             pref.getInt("following", 0).toString()
     }
 
+
+    override fun onResume() {
+        super.onResume()
+
+        loadProfile()
+        loadProfileImage()
+    }
+
     private val imagePicker =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
 
@@ -107,6 +117,7 @@ class ProfileActivity : AppCompatActivity() {
             }
 
         }
+
     private fun uploadProfileImage(uri: Uri) {
 
         val inputStream = contentResolver.openInputStream(uri)
@@ -141,19 +152,32 @@ class ProfileActivity : AppCompatActivity() {
 
                         val imageUrl = response.body()!!.imageUrl
 
+
+                        Toast.makeText(
+                            this@ProfileActivity,
+                            "FROM API: $imageUrl",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+
+
                         Toast.makeText(
                             this@ProfileActivity,
                             imageUrl ?: "Image URL is null",
                             Toast.LENGTH_LONG
                         ).show()
 
-                       if (imageUrl != null) {
+                        if (imageUrl != null) {
 
                             val prefs = getSharedPreferences("Trendora", MODE_PRIVATE)
 
-                           prefs.edit()
-                               .putString("profile_image", imageUrl)
-                               .commit()
+                            prefs.edit()
+                                .putString("profile_image", imageUrl)
+                                .apply()
+
+                            Glide.with(this@ProfileActivity)
+                                .load(imageUrl)
+                                .into(profileImage)
 
                         }
 
@@ -180,7 +204,7 @@ class ProfileActivity : AppCompatActivity() {
                 }
 
             })
-      // Stop here. We'll continue in the next step.
+        // Stop here. We'll continue in the next step.
     }
 
     private fun loadProfileImage() {
@@ -204,6 +228,11 @@ class ProfileActivity : AppCompatActivity() {
                 .placeholder(R.drawable.profile_demo)
                 .error(R.drawable.profile_demo)
                 .into(profileImage)
+
+        } else {
+
+            profileImage.setImageResource(R.drawable.profile_demo)
+
         }
 
     }
@@ -224,6 +253,11 @@ class ProfileActivity : AppCompatActivity() {
 
                         usernameText.text = profile.username
                         bioText.text = profile.bio
+                        Toast.makeText(
+                            this@ProfileActivity,
+                            "Profile image: ${profile.imageUrl}",
+                            Toast.LENGTH_LONG
+                        ).show()
 
                     }
 
@@ -247,49 +281,64 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun loadReels() {
 
-        RetrofitClient.apiService.getMyReels()
-            .enqueue(object : Callback<ArrayList<ProfileReel>> {
+        val database = FirebaseDatabase.getInstance(
+            "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        ).getReference("reels").child("reels")
 
-                override fun onResponse(
-                    call: Call<ArrayList<ProfileReel>>,
-                    response: Response<ArrayList<ProfileReel>>
-                ) {
+        database.get().addOnSuccessListener { snapshot ->
 
-                    if (response.isSuccessful && response.body() != null) {
+            reelList.clear()
 
-                        reelList.clear()
-                        reelList.addAll(response.body()!!)
+            for (child in snapshot.children) {
 
-                        adapter.notifyDataSetChanged()
+                Log.d("PROFILE", "KEY = ${child.key}")
+                Log.d("PROFILE", "VALUE = ${child.value}")
 
-                        postsCount.text = reelList.size.toString()
+                val reel = child.getValue(ProfileReel::class.java)
 
+                if (reel?.videoUrl?.isNotEmpty() == true) {
+                    reelList.add(reel)
+                }
+                Log.d("FIREBASE", "KEY = ${child.key}")
+                Log.d("FIREBASE", "VALUE = ${child.value}")
+                Log.d("FIREBASE", "OBJECT = $reel")
+
+                Log.d(
+                    "PROFILE",
+                    "REEL = $reel"
+                )
+
+                if (reel != null) {
+
+                    Log.d(
+                        "PROFILE",
+                        "REEL ADDED"
+                    )
+
+                    if (reel.ownerId == "user1") {
+                        reelList.add(reel)
                     }
+                } else {
 
+                    Log.d(
+                        "PROFILE",
+                        "NULL OBJECT"
+                    )
                 }
+            }
 
-                override fun onFailure(
-                    call: Call<ArrayList<ProfileReel>>,
-                    t: Throwable
-                ) {
+            adapter.notifyDataSetChanged()
 
-                    Toast.makeText(
-                        this@ProfileActivity,
-                        "Failed to load reels",
-                        Toast.LENGTH_SHORT
-                    ).show()
+            postsCount.text = reelList.size.toString()
 
-                }
+        }.addOnFailureListener {
 
-            })
+            Toast.makeText(
+                this,
+                "Failed to load reels",
+                Toast.LENGTH_SHORT
+            ).show()
 
-    }
-    override fun onResume() {
-        super.onResume()
-
-        val pref = getSharedPreferences("Trendora", MODE_PRIVATE)
-
-        followersCount.text = pref.getInt("followers", 0).toString()
-        followingCount.text = pref.getInt("following", 0).toString()
+        }
     }
 }

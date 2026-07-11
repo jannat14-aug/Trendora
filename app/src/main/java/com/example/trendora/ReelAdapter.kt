@@ -32,6 +32,7 @@ class ReelAdapter(
 ) : RecyclerView.Adapter<ReelAdapter.ReelViewHolder>() {
 
     private val players = HashMap<Int, ExoPlayer>()
+
     inner class ReelViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
@@ -307,8 +308,10 @@ class ReelAdapter(
 
             btnSend.setOnClickListener {
 
-                android.widget.Toast.makeText(holder.itemView.context,"Send Button Clicked",
-                    android.widget.Toast.LENGTH_SHORT).show()
+                android.widget.Toast.makeText(
+                    holder.itemView.context, "Send Button Clicked",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
 
                 val comment = etComment.text.toString().trim()
 
@@ -320,7 +323,8 @@ class ReelAdapter(
                         return@setOnClickListener
                     }
 
-                    val database = FirebaseDatabase.getInstance("https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app/").reference
+                    val database =
+                        FirebaseDatabase.getInstance("https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app/").reference
 
                     val commentData = CommentModel(
                         username = "@trendora",
@@ -333,8 +337,6 @@ class ReelAdapter(
                         .setValue(commentData)
                         .addOnSuccessListener {
 
-                            commentList.add(commentData)
-                            commentAdapter.notifyItemInserted(commentList.size - 1)
                             etComment.text.clear()
 
                             android.widget.Toast.makeText(
@@ -518,6 +520,7 @@ class ReelAdapter(
 
         // ---------------- SAVE ----------------
 
+        //SAVE
         var saved = false
 
         holder.btnSave.setOnClickListener {
@@ -547,9 +550,16 @@ class ReelAdapter(
         }
     }
 
+    override fun onViewDetachedFromWindow(holder: ReelViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+
+        holder.playerView.player?.pause()
+    }
+
     override fun getItemCount(): Int {
         return videoList.size
     }
+
 
     private fun showBigHeart(holder: ReelViewHolder) {
 
@@ -590,7 +600,7 @@ class ReelAdapter(
         holder.playerView.player?.play()
     }
 
-    fun playVideoAt(position: Int) {
+ fun playVideoAt(position: Int) {
 
         players.forEach { (index, player) ->
 
@@ -603,3 +613,5 @@ class ReelAdapter(
         }
     }
 }
+
+

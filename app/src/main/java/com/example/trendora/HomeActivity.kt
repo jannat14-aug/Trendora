@@ -21,6 +21,10 @@ import android.graphics.Color
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.trendora.network.RetrofitClient
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -29,10 +33,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.example.trendora.network.UploadResponse
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
@@ -44,109 +45,14 @@ class HomeActivity : AppCompatActivity() {
 
             if (uri != null) {
 
-                selectedVideoUri = uri
+                val intent = Intent(this, UploadActivity::class.java)
+                intent.putExtra("videoUri", uri.toString())
+                startActivity(intent)
 
-                Toast.makeText(
-                    this,
-                    "Video Selected ✔",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                uploadVideo(uri)
-                // Next step: Upload the video to FastAPI
             }
+
         }
-
     private fun uploadVideo(uri: Uri) {
-
-        val inputStream = contentResolver.openInputStream(uri)
-
-        val file = File(
-                cacheDir,
-        "video_${System.currentTimeMillis()}.mp4"
-        )
-
-        val outputStream = FileOutputStream(file)
-
-        inputStream?.copyTo(outputStream)
-
-        inputStream?.close()
-        outputStream.close()
-
-        val requestFile =
-            file.asRequestBody("video/mp4".toMediaTypeOrNull())
-
-        val body =
-            MultipartBody.Part.createFormData(
-                "file",
-                file.name,
-                requestFile
-            )
-
-        RetrofitClient.apiService.uploadVideo(body)
-            .enqueue(object : Callback<com.example.trendora.network.UploadResponse> {
-
-                override fun onResponse(
-                    call: Call<com.example.trendora.network.UploadResponse>,
-                    response: Response<com.example.trendora.network.UploadResponse>
-                ) {
-
-                    if (response.isSuccessful) {
-
-                        if (response.isSuccessful && response.body() != null) {
-
-                            val fileName = response.body()!!.filename
-
-                            val videoUrl = "http://10.190.29.74:8000/uploads/$fileName"
-
-                            val prefs = getSharedPreferences("Trendora", MODE_PRIVATE)
-
-                            prefs.edit()
-                                .putString("uploaded_reel", videoUrl)
-                                .apply()
-
-                            Toast.makeText(
-                                this@HomeActivity,
-                                "🎉 Reel Uploaded Successfully",
-                                Toast.LENGTH_LONG
-                            ).show()
-
-                        } else {
-
-                            Toast.makeText(
-                                this@HomeActivity,
-                                "Upload Failed",
-                                Toast.LENGTH_LONG
-                            ).show()
-
-                        }
-
-                    } else {
-
-                        Toast.makeText(
-                            this@HomeActivity,
-                            "Upload Failed",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                    }
-
-                }
-
-                override fun onFailure(
-                    call: Call<com.example.trendora.network.UploadResponse>,
-                    t: Throwable
-                ) {
-
-                    Toast.makeText(
-                        this@HomeActivity,
-                        t.message,
-                        Toast.LENGTH_LONG
-                    ).show()
-
-                }
-
-            })
 
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -188,24 +94,28 @@ class HomeActivity : AppCompatActivity() {
 
         val database = FirebaseDatabase.getInstance(
             "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app/"
-        ).reference
+        ).getReference("reels").child("reels")
 
         database.get().addOnSuccessListener { snapshot ->
 
             videoList.clear()
 
+            android.util.Log.d("FIREBASE", "Children = ${snapshot.childrenCount}")
+
             for (child in snapshot.children) {
+
+                android.util.Log.d("FIREBASE", "KEY = ${child.key}")
+                android.util.Log.d("FIREBASE", "VALUE = ${child.value}")
 
                 val reel = child.getValue(VideoModel::class.java)
 
-                if (reel != null) {
+                if (
+                    reel != null &&
+                    reel.videoUrl.isNotEmpty()
+                ) {
                     videoList.add(reel)
                 } else {
-                    Toast.makeText(
-                        this,
-                        "Failed to read: ${child.key}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    android.util.Log.d("FIREBASE", "NULL OBJECT")
                 }
             }
 

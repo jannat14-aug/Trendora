@@ -22,11 +22,17 @@ interface ApiService {
     ): Call<UploadResponse>
 
     @Multipart
-    @POST("upload-profile")
+    @POST("upload")
+    fun uploadVideo(
+        @Part file: MultipartBody.Part,
+        @Part("caption") caption: RequestBody
+    ): Call<UploadResponse>
+
+    @Multipart
+    @POST("uploadProfile")
     fun uploadProfile(
         @Part file: MultipartBody.Part
     ): Call<UploadResponse>
-
 
     @POST("save-profile")
     fun saveProfile(

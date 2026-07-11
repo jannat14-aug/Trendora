@@ -8,6 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import android.util.Log
+import androidx.media3.ui.PlayerView
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 
 class ProfileGridAdapter(
     private val context: Context,
@@ -15,7 +21,9 @@ class ProfileGridAdapter(
 ) : RecyclerView.Adapter<ProfileGridAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val thumbnail: ImageView = itemView.findViewById(R.id.thumbnail)
+
+        val playerView: PlayerView =
+            itemView.findViewById(R.id.playerView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,23 +33,51 @@ class ProfileGridAdapter(
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int = reelList.size
+    override fun getItemCount(): Int {
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        Log.d(
+            "PROFILE",
+            "TOTAL REELS = ${reelList.size}"
+        )
 
-        holder.thumbnail.setImageResource(R.drawable.ic_launcher_foreground)
+        return reelList.size
+    }
+
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int
+    ) {
+
+        val player = ExoPlayer.Builder(context).build()
+
+        holder.playerView.player = player
+
+        val mediaItem = MediaItem.fromUri(
+            reelList[position].videoUrl
+        )
+
+        player.setMediaItem(mediaItem)
+        player.volume = 0f
+        player.repeatMode = Player.REPEAT_MODE_ONE
+        player.prepare()
+        player.play()
 
         holder.itemView.setOnClickListener {
 
-            val intent = Intent(Intent.ACTION_VIEW)
+            val url = reelList[position].videoUrl
 
-            intent.setDataAndType(
-                Uri.parse(reelList[position].videoUrl),
-                "video/*"
-            )
+            if (url.isNotEmpty()) {
 
-            context.startActivity(intent)
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(url)
+                )
 
+                context.startActivity(intent)
+
+            }
         }
+
+
     }
 }

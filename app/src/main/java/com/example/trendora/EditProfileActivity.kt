@@ -74,6 +74,12 @@ class EditProfileActivity : AppCompatActivity() {
                 bio = bio
             )
 
+            Toast.makeText(
+                this,
+                "Calling saveProfile...",
+                Toast.LENGTH_SHORT
+            ).show()
+
             RetrofitClient.apiService.saveProfile(profile)
                 .enqueue(object : Callback<UploadResponse> {
 
@@ -110,7 +116,7 @@ class EditProfileActivity : AppCompatActivity() {
 
                         Toast.makeText(
                             this@EditProfileActivity,
-                            "Error: ${t.message}",
+                            t.toString(),
                             Toast.LENGTH_SHORT
                         ).show()
 
@@ -195,7 +201,7 @@ class EditProfileActivity : AppCompatActivity() {
 
                     Toast.makeText(
                         this@EditProfileActivity,
-                        t.message,
+                        t.toString(),
                         Toast.LENGTH_SHORT
                     ).show()
 

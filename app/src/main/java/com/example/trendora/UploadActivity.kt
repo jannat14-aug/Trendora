@@ -55,6 +55,8 @@ class UploadActivity : AppCompatActivity() {
 
         btnUpload.setOnClickListener {
 
+            btnUpload.isEnabled = false
+
             val caption = etCaption.text.toString().trim()
 
             if (caption.isEmpty()) {
@@ -128,7 +130,7 @@ class UploadActivity : AppCompatActivity() {
                             FirebaseDatabase.getInstance(
                                 "https://trendora-1234-default-rtdb.asia-southeast1.firebasedatabase.app/"
                             ).getReference("reels")
-                                .child("reels")
+                                .child("uploads")
 
                         val reelId = database.push().key!!
 
@@ -149,7 +151,7 @@ class UploadActivity : AppCompatActivity() {
                         database.child(reelId)
                             .setValue(reel)
                             .addOnSuccessListener {
-
+                                btnUpload.isEnabled = true
                                 Toast.makeText(
                                     this@UploadActivity,
                                     "Reel Uploaded Successfully 🎉",
@@ -162,22 +164,24 @@ class UploadActivity : AppCompatActivity() {
 
                             .addOnFailureListener {
 
+                                btnUpload.isEnabled = true
+
                                 Toast.makeText(
                                     this@UploadActivity,
                                     it.message,
                                     Toast.LENGTH_LONG
                                 ).show()
-
                             }
 
                     } else {
+
+                        btnUpload.isEnabled = true
 
                         Toast.makeText(
                             this@UploadActivity,
                             "Upload Failed",
                             Toast.LENGTH_LONG
                         ).show()
-
                     }
 
                 }
@@ -186,7 +190,7 @@ class UploadActivity : AppCompatActivity() {
                     call: Call<UploadResponse>,
                     t: Throwable
                 ) {
-
+                    btnUpload.isEnabled = true
                     Toast.makeText(
                         this@UploadActivity,
                         t.message,

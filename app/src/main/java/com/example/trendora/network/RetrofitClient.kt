@@ -1,12 +1,11 @@
 package com.example.trendora.network
 
-import retrofit2.Retrofit
+import  retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
-    private const val BASE_URL =
-        "http://10.190.29.74:8000/"
+    private const val BASE_URL = "http://10.121.149.123:8000/"
 
     val apiService: ApiService by lazy {
 

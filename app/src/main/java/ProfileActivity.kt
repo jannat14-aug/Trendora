@@ -112,7 +112,12 @@ class ProfileActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
 
             if (uri != null) {
-                profileImage.setImageURI(uri)
+
+                Glide.with(this)
+                    .load(uri)
+                    .circleCrop()
+                    .into(profileImage)
+
                 uploadProfileImage(uri)
             }
 
@@ -177,6 +182,9 @@ class ProfileActivity : AppCompatActivity() {
 
                             Glide.with(this@ProfileActivity)
                                 .load(imageUrl)
+                                .circleCrop()
+                                .placeholder(R.drawable.profile_demo)
+                                .error(R.drawable.profile_demo)
                                 .into(profileImage)
 
                         }
@@ -225,6 +233,7 @@ class ProfileActivity : AppCompatActivity() {
 
             Glide.with(this)
                 .load(savedUrl)
+                .circleCrop()
                 .placeholder(R.drawable.profile_demo)
                 .error(R.drawable.profile_demo)
                 .into(profileImage)

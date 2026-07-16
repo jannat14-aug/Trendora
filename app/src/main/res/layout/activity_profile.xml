@@ -16,16 +16,19 @@
         android:src="@drawable/ic_back"
         app:tint="#FFFFFF"/>
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profileImage"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
+        android:background="@drawable/profile_circle"
+        android:padding="3dp"
         android:src="@drawable/profile_demo"
         android:scaleType="centerCrop"
         android:clickable="true"
-        android:focusable="true"/>
+        android:focusable="true"
+        app:shapeAppearanceOverlay="@style/CircleImage"/>
 
     <TextView
         android:id="@+id/txtUsername"

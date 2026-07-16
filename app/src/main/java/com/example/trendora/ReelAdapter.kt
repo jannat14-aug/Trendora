@@ -264,6 +264,9 @@ class ReelAdapter(
             val commentRecycler =
                 view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.commentRecycler)
 
+            val txtNoComments =
+                view.findViewById<TextView>(R.id.txtNoComments)
+
             val commentList = ArrayList<CommentModel>()
 
             val commentAdapter = CommentAdapter(commentList)
@@ -299,6 +302,12 @@ class ReelAdapter(
                         }
 
                         commentAdapter.notifyDataSetChanged()
+
+                        if (commentList.isEmpty()) {
+                            txtNoComments.visibility = View.VISIBLE
+                        } else {
+                            txtNoComments.visibility = View.GONE
+                        }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -366,6 +375,7 @@ class ReelAdapter(
             }
 
             dialog.show()
+            dialog.window?.setDimAmount(0.7f)
 
             val bottomSheet = dialog.findViewById<View>(
                 com.google.android.material.R.id.design_bottom_sheet

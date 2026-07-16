@@ -19,6 +19,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.FileOutputStream
+import com.bumptech.glide.Glide
 
 class EditProfileActivity : AppCompatActivity() {
 
@@ -129,7 +130,13 @@ class EditProfileActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
 
             if (uri != null) {
-                profileImage.setImageURI(uri)
+
+                Glide.with(this)
+                    .load(uri)
+                    .circleCrop()
+                    .placeholder(R.drawable.profile_demo)
+                    .into(profileImage)
+
                 uploadProfileImage(uri)
             }
 
@@ -181,7 +188,14 @@ class EditProfileActivity : AppCompatActivity() {
 
                             prefs.edit()
                                 .putString("profile_image", imageUrl)
-                                .commit()
+                                .apply()
+
+                            Glide.with(this@EditProfileActivity)
+                                .load(imageUrl)
+                                .circleCrop()
+                                .placeholder(R.drawable.profile_demo)
+                                .error(R.drawable.profile_demo)
+                                .into(profileImage)
 
                         }
 

@@ -1,26 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="12dp">
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:gravity="top"
+    >
 
-    <TextView
-        android:id="@+id/txtCommentUsername"
-        android:layout_width="wrap_content"
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imgCommentProfile"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:src="@drawable/profile_demo"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/CircleImage"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="trendora"
-        android:textStyle="bold"
-        android:textColor="#000000"
-        android:textSize="14sp"/>
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/txtComment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Awesome Reel 🔥"
-        android:textSize="15sp"/>
+        <TextView
+            android:id="@+id/txtCommentUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="trendora"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:fontFamily="sans-serif-medium"/>
 
+        <TextView
+            android:id="@+id/txtComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#E5E5E5"
+            android:textSize="15sp"
+            android:lineSpacingExtra="2dp"/>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="12dp"
+            android:background="#2E2E2E"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imgLike"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:src="@drawable/ic_heart_outline"
+        app:tint="#9CA3AF"/>
 </LinearLayout>

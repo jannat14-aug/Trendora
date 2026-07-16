@@ -34,6 +34,11 @@ import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import com.example.trendora.network.UploadResponse
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
+import android.provider.MediaStore
+
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
@@ -48,6 +53,61 @@ class HomeActivity : AppCompatActivity() {
                 val intent = Intent(this, UploadActivity::class.java)
                 intent.putExtra("videoUri", uri.toString())
                 startActivity(intent)
+
+            }
+
+    }
+    private val cameraLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+
+            if (result.resultCode == RESULT_OK) {
+
+                val videoUri = result.data?.data
+
+                if (videoUri != null) {
+
+                    val intent = Intent(this, UploadActivity::class.java)
+                    intent.putExtra("videoUri", videoUri.toString())
+                    startActivity(intent)
+
+                } else {
+
+                    Toast.makeText(
+                        this,
+                        "Video not found",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                }
+
+            }
+
+        }
+    private val permissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { granted ->
+
+            if (granted) {
+
+                Toast.makeText(
+                    this,
+                    "Camera Permission Granted",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                val intent = Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE)
+                cameraLauncher.launch(intent)
+
+            } else {
+
+                Toast.makeText(
+                    this,
+                    "Camera Permission Denied",
+                    Toast.LENGTH_SHORT
+                ).show()
 
             }
 
@@ -214,6 +274,19 @@ class HomeActivity : AppCompatActivity() {
                             "Camera",
                             Toast.LENGTH_SHORT
                         ).show()
+                        if (ContextCompat.checkSelfPermission(
+                                this,
+                                Manifest.permission.CAMERA
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+
+                            val intent = Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE)
+                            cameraLauncher.launch(intent)
+                        } else {
+
+                            permissionLauncher.launch(Manifest.permission.CAMERA)
+
+                        }
 
                     }
 
